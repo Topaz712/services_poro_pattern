@@ -1,17 +1,17 @@
 class UsersController < ApplicationController
 
-  def index
-    users = UserService::Base.filter_users(params)
-    render json: users, status: :ok
+  def create
+    result = UserService::Base.create_user(user_params)
+    if result.success?
+      render json: result.payload, status: :created
+    else
+      render json: result.errors, status: :unprocessable_entity
+    end
   end
 
-  def create
-    user = UserService::Base.create_user(user_params)
-    if user.valid?
-      render json: user, status: :created
-    else
-      render json: user, status: :unprocessable_entity
-    end
+  def index
+    result = UserService::Base.filter_users(params)
+    render json: result.payload, status: :ok
   end
 
   private
